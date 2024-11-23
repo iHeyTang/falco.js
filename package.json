@@ -1,5 +1,5 @@
 {
-  "name": "qiqiao",
+  "name": "repo",
   "private": true,
   "scripts": {
     "build": "turbo build",
@@ -16,7 +16,6 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "npm@10.9.0",
   "workspaces": [
     "apps/*",
     "packages/*"

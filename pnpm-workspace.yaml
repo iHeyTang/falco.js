@@ -1,0 +1,9 @@
+packages:
+  # 所有 packages 目录下的子项目
+  - 'packages/*'
+  # 所有 apps 目录下的应用
+  - 'apps/*'
+  # 如果有其他目录结构，也可以添加
+  # - 'tools/*'
+  # 排除所有 packages 目录下的测试目录
+  - '!**/test/**' 

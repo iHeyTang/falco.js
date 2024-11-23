@@ -4,7 +4,8 @@
     "plugins": [{ "name": "next" }],
     "baseUrl": ".",
     "paths": {
-      "@repo/web/*": ["./src/*"]
+      "@repo/web/*": ["./src/*"],
+      "@repo/utils/*": ["../../packages/utils/src/*"]
     }
   },
   "include": ["next-env.d.ts", "next.config.mjs", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "postcss.config.mjs"],

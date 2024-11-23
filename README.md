@@ -1,81 +1,74 @@
-# Turborepo starter
+# Falco.js
 
-This is an official starter Turborepo.
+Falco.js 是一个基于 Next.js 的 Web 快速开发框架，采用 Turborepo 管理的 monorepo 架构，旨在提供一套完整的企业级 Web 应用开发解决方案。
 
-## Using this example
+## 特性
 
-Run the following command:
+- 🚀 基于 Next.js 15 和 React 19
+- 📦 Monorepo 架构，更好的代码复用和管理
+- 🔥 TypeScript 支持
+- 🛠️ 内置服务端状态管理
+- 📝 统一的日志和错误处理
+- ⚡️ 开发体验优化
 
-```sh
-npx create-turbo@latest
-```
+## 快速开始
 
-## What's inside?
+```bash
+# 克隆项目
+git clone https://github.com/iheytang/falco.js.git
+cd falco.js
 
-This Turborepo includes the following packages/apps:
+# 安装依赖
+pnpm install
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
+# 启动开发服务器
 pnpm dev
 ```
 
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+## 项目结构
 
 ```
-cd my-turborepo
-npx turbo login
+apps/
+  ├── web/          # 主要的 Web 应用
+  └── docs/         # 文档网站
+packages/
+  ├── utils/        # 通用工具库
+  ├── persistence/  # 数据持久化模块
+  ├── ui/           # UI 组件库
+  └── eslint-config/# ESLint 配置
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## 核心功能
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+- **服务端动作**: 简化服务端状态管理和数据获取
+- **持久化层**: 统一的数据访问接口
+- **工具集**: 包含日志、时间处理等常用工具
+- **类型安全**: 完整的 TypeScript 支持
 
+## 开发命令
+
+```bash
+# 开发模式
+pnpm dev
+
+# 构建项目
+pnpm build
+
+# 运行测试
+pnpm test
+
+# 代码检查
+pnpm lint
 ```
-npx turbo link
-```
 
-## Useful Links
+## 贡献指南
 
-Learn more about the power of Turborepo:
+欢迎提交 Issue 和 Pull Request。在提交 PR 之前，请确保：
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+1. 代码通过所有测试
+2. 遵循项目的代码规范
+3. 提供清晰的提交信息
+
+## 许可证
+
+[MIT License](LICENSE)

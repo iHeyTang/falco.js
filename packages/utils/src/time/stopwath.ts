@@ -60,7 +60,7 @@ export class Stopwatch {
     }
 
     const currentTime = this.isRunning ? performance.now() : (this.pausedTime as number);
-    return currentTime - this.startTime - this.totalPausedTime;
+    return Number(((currentTime - this.startTime - this.totalPausedTime).toFixed(3)));
   }
 
   /**

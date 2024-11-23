@@ -1,6 +1,3 @@
-import chalk from 'chalk';
-import dayjs from 'dayjs';
-
 export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
 export type LogMeta = Record<string, string>;
 
@@ -8,11 +5,11 @@ export interface LogOutput {
   write(level: LogLevel, message: string): void;
 }
 
-export interface LoggerConfig {
+export interface LoggerConfig<Meta extends LogMeta = LogMeta> {
   /** 日志格式 */
-  format?: string;
+  format?: (params: { level: LogLevel; message: string; metadata: Meta }) => string;
   /** 日志预设占位值 */
-  formatMeta?: LogMeta;
+  metadata?: Meta;
   /** 日志输出方式 */
   outputs?: LogOutput[];
   /** 日志等级 配置等级后，只有等于或高于该等级的日志会被打印 */
@@ -34,60 +31,54 @@ export class ConsoleOutput implements LogOutput {
   }
 }
 
-export class Logger {
-  config: Required<Omit<LoggerConfig, 'outputs'>>;
-  private tails: string[] = [];
+export class Logger<Meta extends LogMeta = LogMeta> {
+  private config: Required<Omit<LoggerConfig<Meta>, 'outputs'>>;
   private outputs: LogOutput[];
 
-  constructor(config: LoggerConfig) {
+  constructor(config: LoggerConfig<Meta>) {
     this.config = {
-      format: config.format || '[{time}]',
-      formatMeta: config.formatMeta || {},
+      format: config.format || (({ message }) => `${message}`),
+      metadata: config.metadata || ({} as Meta),
       level: config.level || 'DEBUG',
     };
     this.outputs = config.outputs || [new ConsoleOutput()];
   }
 
-  private formatMessage(message: any[]): string {
-    const time = dayjs().toISOString();
-
-    let formatted = this.config.format;
-
-    formatted = formatted.replace(`{time}`, time);
-    for (const metaKey of Object.keys(this.config.formatMeta)) {
-      formatted = formatted.replace(`{${metaKey}}`, this.config.formatMeta[metaKey] || '-');
-    }
-    const tail = this.tails.length ? ` ${this.tails.map(t => `[${t}]`).join(' ')}` : '';
-    return chalk`${formatted}${tail} ${message.join(' ')}`;
+  private formatMessage(level: LogLevel, message: any[]): string {
+    return this.config.format({ level, message: message.join(' '), metadata: this.config.metadata });
   }
 
-  _push(...message: any[]) {
-    this.tails.push(...message);
+  public setMetadata(metadata: (prev: Meta) => Meta) {
+    this.config.metadata = metadata(this.config.metadata);
   }
 
-  _pop() {
-    return this.tails.pop();
+  public setFormat(format: (params: { level: LogLevel; message: string; metadata: Meta }) => string) {
+    this.config.format = format;
   }
 
-  log(...message: any[]) {
+  public info(...message: any[]) {
     this.write('INFO', message);
   }
 
-  debug(...message: any[]) {
+  public log(...message: any[]) {
+    this.write('INFO', message);
+  }
+
+  public debug(...message: any[]) {
     this.write('DEBUG', message);
   }
 
-  error(...message: any[]) {
+  public error(...message: any[]) {
     this.write('ERROR', message);
   }
 
-  warn(...message: any[]) {
+  public warn(...message: any[]) {
     this.write('WARN', message);
   }
 
   private write(level: LogLevel, message: any[]) {
     if (!this.shouldLog(level)) return;
-    const formatted = this.formatMessage(message);
+    const formatted = this.formatMessage(level, message);
     this.outputs.forEach(output => output.write(level, formatted));
   }
 
@@ -95,7 +86,7 @@ export class Logger {
     return LOG_LEVEL_LIST.indexOf(level) >= LOG_LEVEL_LIST.indexOf(this.config.level as LogLevel);
   }
 
-  clone(config: Partial<LoggerConfig> = {}): Logger {
+  public clone(config: Partial<LoggerConfig<Meta>> = {}): Logger<Meta> {
     return new Logger({ ...this.config, ...config });
   }
 }

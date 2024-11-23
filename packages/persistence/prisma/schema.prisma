@@ -1,0 +1,214 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户账号
+model Account {
+  id       String  @id @default(cuid())
+  email    String  @unique
+  name     String?
+  password String
+  status   String // ACTIVE, DISABLED, DELETED
+
+  // 关联关系
+  accountRoles AccountRole[] // 直接分配的角色
+  groupMembers GroupMember[] // 所属用户组
+  sessions     Session[] // 登录会话
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 用户组
+model Group {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  code        String  @unique // 用户组编码
+  description String?
+  type        String // PERMANENT, TEMPORARY 永久组或临时组
+
+  // 用户组层级
+  parent   Group?  @relation("GroupHierarchy", fields: [parentId], references: [id])
+  parentId String?
+  children Group[] @relation("GroupHierarchy")
+
+  // 关联关系
+  members    GroupMember[] // 组成员
+  groupRoles GroupRole[] // 组角色
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expiresAt DateTime? // 临时组可以设置过期时间
+}
+
+// 角色
+model Role {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  code        String  @unique // 角色编码
+  description String?
+  type        String // SYSTEM, CUSTOM 系统角色或自定义角色
+
+  // 角色分配关系
+  accountRoles AccountRole[] // 被分配到的用户
+  groupRoles   GroupRole[] // 被分配到的用户组
+
+  // 角色权限
+  permissions RolePermission[] // 角色拥有的权限
+
+  // 角色继承关系
+  parent   Role?   @relation("RoleHierarchy", fields: [parentId], references: [id])
+  parentId String?
+  children Role[]  @relation("RoleHierarchy")
+
+  // 角色约束
+  exclusiveWith RoleExclusion[]    @relation("ExclusiveRoleA")
+  excludedBy    RoleExclusion[]    @relation("ExclusiveRoleB")
+  maxMembers    RoleLimit? // 角色成员数限制
+  prerequisites RolePrerequisite[] @relation("RequiredRole")
+  requiredFor   RolePrerequisite[] @relation("DependentRole")
+
+  // 会话激活记录
+  activeSessions SessionRole[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 权限
+model Permission {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  code        String  @unique // 权限编码
+  description String?
+  type        String // API, MENU, OPERATION, DATA 等
+
+  // 关联关系
+  roles RolePermission[] // 拥有该权限的角色
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============ 关联关系表 ============
+
+// 用户组成员关系
+model GroupMember {
+  id        String    @id @default(cuid())
+  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId   String
+  account   Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String
+  joinedAt  DateTime  @default(now())
+  expiresAt DateTime? // 成员可以设置过期时间
+
+  @@unique([groupId, accountId])
+}
+
+// 账户-角色关联
+model AccountRole {
+  id        String    @id @default(cuid())
+  account   Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String
+  role      Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    String
+  grantedAt DateTime  @default(now())
+  grantedBy String // 授权人ID
+  expiresAt DateTime? // 可选的过期时间
+
+  @@unique([accountId, roleId])
+}
+
+// 用户组-角色关联
+model GroupRole {
+  id        String    @id @default(cuid())
+  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId   String
+  role      Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    String
+  grantedAt DateTime  @default(now())
+  grantedBy String // 授权人ID
+  expiresAt DateTime? // 角色授权可以设置过期时间
+
+  @@unique([groupId, roleId])
+}
+
+// 角色-权限关联
+model RolePermission {
+  id           String     @id @default(cuid())
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId       String
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  permissionId String
+  grantedAt    DateTime   @default(now())
+
+  @@unique([roleId, permissionId])
+}
+
+// ============ 约束相关表 ============
+
+// 角色互斥关系
+model RoleExclusion {
+  id        String   @id @default(cuid())
+  roleA     Role     @relation("ExclusiveRoleA", fields: [roleAId], references: [id], onDelete: Cascade)
+  roleAId   String
+  roleB     Role     @relation("ExclusiveRoleB", fields: [roleBId], references: [id], onDelete: Cascade)
+  roleBId   String
+  isRuntime Boolean  @default(false) // 运行时互斥标记
+  createdAt DateTime @default(now())
+
+  @@unique([roleAId, roleBId])
+}
+
+// 角色成员数限制
+model RoleLimit {
+  id         String   @id @default(cuid())
+  role       Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId     String   @unique
+  maxMembers Int // 最大成员数
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// 角色前置要求
+model RolePrerequisite {
+  id              String   @id @default(cuid())
+  dependentRole   Role     @relation("DependentRole", fields: [dependentRoleId], references: [id], onDelete: Cascade)
+  dependentRoleId String
+  requiredRole    Role     @relation("RequiredRole", fields: [requiredRoleId], references: [id], onDelete: Cascade)
+  requiredRoleId  String
+  createdAt       DateTime @default(now())
+
+  @@unique([dependentRoleId, requiredRoleId])
+}
+
+// ============ 会话相关表 ============
+
+// 用户会话
+model Session {
+  id           String        @id @default(cuid())
+  account      Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId    String
+  token        String        @unique
+  activeRoles  SessionRole[] // 当前激活的角色
+  expiresAt    DateTime
+  createdAt    DateTime      @default(now())
+  lastAccessAt DateTime      @updatedAt
+}
+
+// 会话中激活的角色
+model SessionRole {
+  id          String   @id @default(cuid())
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId   String
+  role        Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId      String
+  activatedAt DateTime @default(now())
+
+  @@unique([sessionId, roleId])
+}

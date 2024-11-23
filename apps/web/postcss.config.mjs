@@ -1,4 +1,4 @@
-import sharedConfig from '@repo/ui/postcss.config';
+import sharedConfig from '@falcojs/ui/postcss.config';
 
 const config = {
   ...sharedConfig,

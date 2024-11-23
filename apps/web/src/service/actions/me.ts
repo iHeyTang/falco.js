@@ -1,6 +1,6 @@
 'use server';
 
-import { server } from '@repo/utils';
+import { server } from '@falcojs/utils';
 
 export const getMe = server<string, null>('getMe', async ctx => {
   ctx.logger.info('Server Action, getMe');

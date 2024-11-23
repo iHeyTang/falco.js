@@ -1,5 +1,5 @@
-import { HttpClient } from '@repo/utils/http-client';
-import { ServiceContextPluginLoader } from '@repo/utils/service-context';
+import { HttpClient } from '@falcojs/utils/http-client';
+import { ServiceContextPluginLoader } from '@falcojs/utils/service-context';
 
 export const requestPlugin: ServiceContextPluginLoader = {
   name: 'request',
@@ -19,7 +19,7 @@ export const requestPlugin: ServiceContextPluginLoader = {
   },
 };
 
-declare module '@repo/utils/service-context' {
+declare module '@falcojs/utils/service-context' {
   interface ServiceContextPlugins {
     request: HttpClient;
   }

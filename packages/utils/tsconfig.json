@@ -1,5 +1,5 @@
 {
-  "extends": "@repo/typescript-config/base.json",
+  "extends": "@falcojs/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
@@ -7,7 +7,7 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@repo/utils/*": ["./src/*"]
+      "@falcojs/utils/*": ["./src/*"]
     }
   },
   "include": ["src/**/*"],

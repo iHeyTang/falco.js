@@ -1,5 +1,5 @@
 {
-    "name": "@repo/utils",
+    "name": "@falcojs/utils",
     "version": "0.0.0",
     "private": true,
     "main": "./src/index.ts",
@@ -12,8 +12,8 @@
         "type-check": "tsc --noEmit"
     },
     "devDependencies": {
-        "@repo/eslint-config": "workspace:*",
-        "@repo/typescript-config": "workspace:*",
+        "@falcojs/eslint-config": "workspace:*",
+        "@falcojs/typescript-config": "workspace:*",
         "@types/node": "^20.0.0",
         "tsup": "^8.0.0",
         "typescript": "^5.0.0"

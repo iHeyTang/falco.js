@@ -1,10 +1,10 @@
-import { ThemeProvider } from '@repo/ui/components/core/theme-provider';
-import { SidebarProvider, SidebarTrigger } from '@repo/ui/components/ui/sidebar';
-import { AppSidebar } from '@repo/web/components/AppSiderbar';
+import { ThemeProvider } from '@falcojs/ui/components/core/theme-provider';
+import { SidebarProvider, SidebarTrigger } from '@falcojs/ui/components/ui/sidebar';
+import { AppSidebar } from '@falcojs/web/components/AppSiderbar';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
-import '@repo/ui/globals.css';
+import '@falcojs/ui/globals.css';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',

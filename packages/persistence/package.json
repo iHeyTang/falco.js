@@ -1,5 +1,5 @@
 {
-  "name": "@repo/persistence",
+  "name": "@falcojs/persistence",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",
@@ -16,7 +16,7 @@
     "@prisma/client": "^5.10.0"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@falcojs/typescript-config": "workspace:*",
     "@types/node": "^20.11.24",
     "prisma": "^5.10.0",
     "typescript": "^5.3.3"

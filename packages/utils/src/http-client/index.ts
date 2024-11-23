@@ -1,5 +1,5 @@
-import { Snowflake } from '@repo/utils/snowflake';
-import { Stopwatch } from '@repo/utils/time';
+import { Snowflake } from '@falcojs/utils/snowflake';
+import { Stopwatch } from '@falcojs/utils/time';
 import axios, { AxiosInstance } from 'axios';
 import chalk from 'chalk';
 

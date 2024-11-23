@@ -1,5 +1,5 @@
 {
-  "name": "repo",
+  "name": "falcojs",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -7,9 +7,9 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "ui": "pnpm --filter @repo/ui ui",
-    "db:generate": "pnpm --filter @repo/persistence db:generate",
-    "db:studio": "pnpm --filter @repo/persistence db:studio"
+    "ui": "pnpm --filter @falcojs/ui ui",
+    "db:generate": "pnpm --filter @falcojs/persistence db:generate",
+    "db:studio": "pnpm --filter @falcojs/persistence db:studio"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

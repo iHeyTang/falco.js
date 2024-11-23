@@ -1,5 +1,5 @@
 import { Config } from 'tailwindcss';
-import sharedConfig from '@repo/ui/tailwind.config';
+import sharedConfig from '@falcojs/ui/tailwind.config';
 
 const config: Config = {
   // 继承 UI 库的配置

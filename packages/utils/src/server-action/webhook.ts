@@ -1,6 +1,6 @@
-import { createContext as createServiceContext, ServiceContext } from '@repo/utils/service-context';
-import { Snowflake } from '@repo/utils/snowflake';
-import { Stopwatch } from '@repo/utils/time';
+import { createContext as createServiceContext, ServiceContext } from '@falcojs/utils/service-context';
+import { Snowflake } from '@falcojs/utils/snowflake';
+import { Stopwatch } from '@falcojs/utils/time';
 import chalk from 'chalk';
 import { NextRequest, NextResponse } from 'next/server';
 

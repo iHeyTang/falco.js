@@ -1,4 +1,4 @@
-import { ServiceContextPluginLoader } from '@repo/utils/service-context';
+import { ServiceContextPluginLoader } from '@falcojs/utils/service-context';
 import { loggerPlugin } from './logger';
 import { requestPlugin } from './request';
 

@@ -20,7 +20,7 @@ importers:
 
   apps/web:
     dependencies:
-      '@repo/ui':
+      '@falcojs/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       next:
@@ -33,13 +33,13 @@ importers:
         specifier: 19.0.0-rc-66855b96-20241106
         version: 19.0.0-rc-66855b96-20241106(react@19.0.0-rc-66855b96-20241106)
     devDependencies:
-      '@repo/eslint-config':
+      '@falcojs/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
-      '@repo/typescript-config':
+      '@falcojs/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
-      '@repo/utils':
+      '@falcojs/utils':
         specifier: workspace:*
         version: link:../../packages/utils
       '@types/node':
@@ -91,7 +91,7 @@ importers:
         specifier: ^5.10.0
         version: 5.22.0(prisma@5.22.0)
     devDependencies:
-      '@repo/typescript-config':
+      '@falcojs/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
@@ -253,10 +253,10 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
-      '@repo/eslint-config':
+      '@falcojs/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
-      '@repo/typescript-config':
+      '@falcojs/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@turbo/gen':
@@ -293,10 +293,10 @@ importers:
         specifier: ^1.11.13
         version: 1.11.13
     devDependencies:
-      '@repo/eslint-config':
+      '@falcojs/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
-      '@repo/typescript-config':
+      '@falcojs/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
@@ -306,7 +306,7 @@ importers:
         specifier: ^8.0.0
         version: 8.3.5(jiti@1.21.6)(postcss@8.4.49)(typescript@5.5.4)(yaml@2.6.1)
       typescript:
-        specifier: 5.5.4
+        specifier: ^5.0.0
         version: 5.5.4
 
 packages:

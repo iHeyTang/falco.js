@@ -1,5 +1,5 @@
-import { ServiceContextPluginLoader } from '@repo/utils/service-context';
-import { Logger } from '@repo/utils/logger';
+import { ServiceContextPluginLoader } from '@falcojs/utils/service-context';
+import { Logger } from '@falcojs/utils/logger';
 import dayjs from 'dayjs';
 
 export const loggerPlugin: ServiceContextPluginLoader = {
@@ -18,7 +18,7 @@ export const loggerPlugin: ServiceContextPluginLoader = {
   },
 };
 
-declare module '@repo/utils/service-context' {
+declare module '@falcojs/utils/service-context' {
   interface ServiceContextPlugins {
     logger: Logger<any>;
   }

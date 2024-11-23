@@ -1,7 +1,7 @@
 'use client';
 
-import { useAction } from '@repo/utils';
-import { getMe } from '@repo/web/service/actions/me';
+import { useAction } from '@falcojs/utils';
+import { getMe } from '@falcojs/web/service/actions/me';
 
 export default function Home() {
   const { loading, data } = useAction(getMe, null);

@@ -1,4 +1,4 @@
-import { ThemeToggle } from '@repo/ui/components/core/theme-toggle';
+import { ThemeToggle } from '@falcojs/ui/components/core/theme-toggle';
 import {
   Sidebar,
   SidebarContent,
@@ -8,7 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@repo/ui/components/ui/sidebar';
+} from '@falcojs/ui/components/ui/sidebar';
 import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
 
 // Menu items.

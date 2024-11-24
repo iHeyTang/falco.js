@@ -13,6 +13,7 @@
     },
     "devDependencies": {
         "@falcojs/eslint-config": "workspace:*",
+        "@falcojs/persistence": "workspace:*",
         "@falcojs/typescript-config": "workspace:*",
         "@types/node": "^20.0.0",
         "tsup": "^8.0.0",

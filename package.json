@@ -9,7 +9,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "ui": "pnpm --filter @falcojs/ui ui",
     "db:generate": "pnpm --filter @falcojs/persistence db:generate",
-    "db:studio": "pnpm --filter @falcojs/persistence db:studio"
+    "db:studio": "pnpm --filter @falcojs/persistence db:studio",
+    "db:push": "dotenv -e .env -- pnpm --filter @falcojs/persistence db:push"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

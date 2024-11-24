@@ -1,0 +1,34 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+{
+  "name": "FalcoJS",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Linting / Formatting
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "rvest.vs-code-prettier-eslint",
+        // Coding Assist
+        "csstools.postcss",
+        "Prisma.prisma",
+        "streetsidesoftware.code-spell-checker",
+        "Gruntfuggly.todo-tree",
+        "naumovs.color-highlight",
+        "bruceyuhb.hsl-preview",
+        "bradlc.vscode-tailwindcss",
+        // Docker
+        "ms-azuretools.vscode-docker",
+        // Theme
+        "PKief.material-icon-theme"
+      ]
+    }
+  }
+}

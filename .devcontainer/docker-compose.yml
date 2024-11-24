@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  app:
+    container_name: falcojs
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../:/workspace:cached
+    command: sleep infinity
+    environment:
+      - NODE_ENV=development
+    # 添加与数据库的依赖关系
+    depends_on:
+      - postgres
+
+  # 添加 PostgreSQL 服务
+  postgres:
+    container_name: falcojs-postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: falcojs
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init/postgres/init-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - '5432:5432'
+
+# 添加数据卷定义
+volumes:
+  postgres-data:
+    name: falcojs-postgres-data

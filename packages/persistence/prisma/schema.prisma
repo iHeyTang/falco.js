@@ -4,11 +4,11 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("POSTGRES_DATABASE_URL")
 }
 
 // 用户账号
-model Account {
+model accounts {
   id       String  @id @default(cuid())
   email    String  @unique
   name     String?
@@ -16,16 +16,16 @@ model Account {
   status   String // ACTIVE, DISABLED, DELETED
 
   // 关联关系
-  accountRoles AccountRole[] // 直接分配的角色
-  groupMembers GroupMember[] // 所属用户组
-  sessions     Session[] // 登录会话
+  account_roles account_roles[] // 直接分配的角色
+  group_members group_members[] // 所属用户组
+  sessions      sessions[] // 登录会话
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  created_at DateTime @default(now()) @db.Timestamp()
+  updated_at DateTime @updatedAt @db.Timestamp()
 }
 
 // 用户组
-model Group {
+model groups {
   id          String  @id @default(cuid())
   name        String  @unique
   code        String  @unique // 用户组编码
@@ -33,21 +33,21 @@ model Group {
   type        String // PERMANENT, TEMPORARY 永久组或临时组
 
   // 用户组层级
-  parent   Group?  @relation("GroupHierarchy", fields: [parentId], references: [id])
-  parentId String?
-  children Group[] @relation("GroupHierarchy")
+  parent    groups?  @relation("GroupHierarchy", fields: [parent_id], references: [id])
+  parent_id String?
+  children  groups[] @relation("GroupHierarchy")
 
   // 关联关系
-  members    GroupMember[] // 组成员
-  groupRoles GroupRole[] // 组角色
+  members     group_members[] // 组成员
+  group_roles group_roles[] // 组角色
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  expiresAt DateTime? // 临时组可以设置过期时间
+  created_at DateTime  @default(now()) @db.Timestamp()
+  updated_at DateTime  @updatedAt @db.Timestamp()
+  expires_at DateTime? @db.Timestamp() // 临时组可以设置过期时间
 }
 
 // 角色
-model Role {
+model roles {
   id          String  @id @default(cuid())
   name        String  @unique
   code        String  @unique // 角色编码
@@ -55,33 +55,33 @@ model Role {
   type        String // SYSTEM, CUSTOM 系统角色或自定义角色
 
   // 角色分配关系
-  accountRoles AccountRole[] // 被分配到的用户
-  groupRoles   GroupRole[] // 被分配到的用户组
+  account_roles account_roles[] // 被分配到的用户
+  group_roles   group_roles[] // 被分配到的用户组
 
   // 角色权限
-  permissions RolePermission[] // 角色拥有的权限
+  permissions role_permissions[] // 角色拥有的权限
 
   // 角色继承关系
-  parent   Role?   @relation("RoleHierarchy", fields: [parentId], references: [id])
-  parentId String?
-  children Role[]  @relation("RoleHierarchy")
+  parent    roles?  @relation("RoleHierarchy", fields: [parent_id], references: [id])
+  parent_id String?
+  children  roles[] @relation("RoleHierarchy")
 
   // 角色约束
-  exclusiveWith RoleExclusion[]    @relation("ExclusiveRoleA")
-  excludedBy    RoleExclusion[]    @relation("ExclusiveRoleB")
-  maxMembers    RoleLimit? // 角色成员数限制
-  prerequisites RolePrerequisite[] @relation("RequiredRole")
-  requiredFor   RolePrerequisite[] @relation("DependentRole")
+  exclusive_with role_exclusions[]    @relation("ExclusiveRoleA")
+  excluded_by    role_exclusions[]    @relation("ExclusiveRoleB")
+  max_members    role_limits? // 角色成员数限制
+  prerequisites  role_prerequisites[] @relation("RequiredRole")
+  required_for   role_prerequisites[] @relation("DependentRole")
 
   // 会话激活记录
-  activeSessions SessionRole[]
+  active_sessions session_roles[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  created_at DateTime @default(now()) @db.Timestamp()
+  updated_at DateTime @updatedAt @db.Timestamp()
 }
 
 // 权限
-model Permission {
+model permissions {
   id          String  @id @default(cuid())
   name        String  @unique
   code        String  @unique // 权限编码
@@ -89,126 +89,126 @@ model Permission {
   type        String // API, MENU, OPERATION, DATA 等
 
   // 关联关系
-  roles RolePermission[] // 拥有该权限的角色
+  roles role_permissions[] // 拥有该权限的角色
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  created_at DateTime @default(now()) @db.Timestamp()
+  updated_at DateTime @updatedAt @db.Timestamp()
 }
 
 // ============ 关联关系表 ============
 
 // 用户组成员关系
-model GroupMember {
-  id        String    @id @default(cuid())
-  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId   String
-  account   Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  accountId String
-  joinedAt  DateTime  @default(now())
-  expiresAt DateTime? // 成员可以设置过期时间
+model group_members {
+  id         String    @id @default(cuid())
+  group      groups    @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  group_id   String
+  account    accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade)
+  account_id String
+  joined_at  DateTime  @default(now())
+  expires_at DateTime? // 成员可以设置过期时间
 
-  @@unique([groupId, accountId])
+  @@unique([group_id, account_id])
 }
 
 // 账户-角色关联
-model AccountRole {
-  id        String    @id @default(cuid())
-  account   Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  accountId String
-  role      Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId    String
-  grantedAt DateTime  @default(now())
-  grantedBy String // 授权人ID
-  expiresAt DateTime? // 可选的过期时间
+model account_roles {
+  id         String    @id @default(cuid())
+  account    accounts  @relation(fields: [account_id], references: [id], onDelete: Cascade)
+  account_id String
+  role       roles     @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  role_id    String
+  granted_at DateTime  @default(now())
+  granted_by String // 授权人ID
+  expires_at DateTime? // 可选的过期时间
 
-  @@unique([accountId, roleId])
+  @@unique([account_id, role_id])
 }
 
 // 用户组-角色关联
-model GroupRole {
-  id        String    @id @default(cuid())
-  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId   String
-  role      Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId    String
-  grantedAt DateTime  @default(now())
-  grantedBy String // 授权人ID
-  expiresAt DateTime? // 角色授权可以设置过期时间
+model group_roles {
+  id         String    @id @default(cuid())
+  group      groups    @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  group_id   String
+  role       roles     @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  role_id    String
+  granted_at DateTime  @default(now())
+  grantedBy  String // 授权人ID
+  expiresAt  DateTime? // 角色授权可以设置过期时间
 
-  @@unique([groupId, roleId])
+  @@unique([group_id, role_id])
 }
 
 // 角色-权限关联
-model RolePermission {
-  id           String     @id @default(cuid())
-  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId       String
-  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
-  permissionId String
-  grantedAt    DateTime   @default(now())
+model role_permissions {
+  id            String      @id @default(cuid())
+  role          roles       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  role_id       String
+  permission    permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+  permission_id String
+  granted_at    DateTime    @default(now())
 
-  @@unique([roleId, permissionId])
+  @@unique([role_id, permission_id])
 }
 
 // ============ 约束相关表 ============
 
 // 角色互斥关系
-model RoleExclusion {
-  id        String   @id @default(cuid())
-  roleA     Role     @relation("ExclusiveRoleA", fields: [roleAId], references: [id], onDelete: Cascade)
-  roleAId   String
-  roleB     Role     @relation("ExclusiveRoleB", fields: [roleBId], references: [id], onDelete: Cascade)
-  roleBId   String
-  isRuntime Boolean  @default(false) // 运行时互斥标记
-  createdAt DateTime @default(now())
+model role_exclusions {
+  id         String   @id @default(cuid())
+  role_a     roles    @relation("ExclusiveRoleA", fields: [role_a_id], references: [id], onDelete: Cascade)
+  role_a_id  String
+  role_b     roles    @relation("ExclusiveRoleB", fields: [role_b_id], references: [id], onDelete: Cascade)
+  role_b_id  String
+  is_runtime Boolean  @default(false) // 运行时互斥标记
+  created_at DateTime @default(now())
 
-  @@unique([roleAId, roleBId])
+  @@unique([role_a_id, role_b_id])
 }
 
 // 角色成员数限制
-model RoleLimit {
-  id         String   @id @default(cuid())
-  role       Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId     String   @unique
-  maxMembers Int // 最大成员数
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+model role_limits {
+  id          String   @id @default(cuid())
+  role        roles    @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  role_id     String   @unique
+  max_members Int // 最大成员数
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
 }
 
 // 角色前置要求
-model RolePrerequisite {
-  id              String   @id @default(cuid())
-  dependentRole   Role     @relation("DependentRole", fields: [dependentRoleId], references: [id], onDelete: Cascade)
-  dependentRoleId String
-  requiredRole    Role     @relation("RequiredRole", fields: [requiredRoleId], references: [id], onDelete: Cascade)
-  requiredRoleId  String
-  createdAt       DateTime @default(now())
+model role_prerequisites {
+  id                String   @id @default(cuid())
+  dependent_role    roles    @relation("DependentRole", fields: [dependent_role_id], references: [id], onDelete: Cascade)
+  dependent_role_id String
+  required_role     roles    @relation("RequiredRole", fields: [required_role_id], references: [id], onDelete: Cascade)
+  required_role_id  String
+  created_at        DateTime @default(now())
 
-  @@unique([dependentRoleId, requiredRoleId])
+  @@unique([dependent_role_id, required_role_id])
 }
 
 // ============ 会话相关表 ============
 
 // 用户会话
-model Session {
-  id           String        @id @default(cuid())
-  account      Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  accountId    String
-  token        String        @unique
-  activeRoles  SessionRole[] // 当前激活的角色
-  expiresAt    DateTime
-  createdAt    DateTime      @default(now())
-  lastAccessAt DateTime      @updatedAt
+model sessions {
+  id             String          @id @default(cuid())
+  account        accounts        @relation(fields: [account_id], references: [id], onDelete: Cascade)
+  account_id     String
+  token          String          @unique
+  active_roles   session_roles[] // 当前激活的角色
+  expires_at     DateTime
+  created_at     DateTime        @default(now())
+  last_access_at DateTime        @updatedAt
 }
 
 // 会话中激活的角色
-model SessionRole {
-  id          String   @id @default(cuid())
-  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  sessionId   String
-  role        Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId      String
-  activatedAt DateTime @default(now())
+model session_roles {
+  id           String   @id @default(cuid())
+  session      sessions @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  session_id   String
+  role         roles    @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  role_id      String
+  activated_at DateTime @default(now())
 
-  @@unique([sessionId, roleId])
+  @@unique([session_id, role_id])
 }

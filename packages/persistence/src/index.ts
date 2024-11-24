@@ -14,7 +14,7 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-type PrismaClientWithEvents<ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions> = PrismaClient<
+export type PrismaClientWithEvents<ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions> = PrismaClient<
   ClientOptions,
   'query' | 'error' | 'info' | 'warn'
 >;

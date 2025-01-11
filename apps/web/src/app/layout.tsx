@@ -17,7 +17,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: 'Falco.js',
-  description: '基于Nextjs的快速开发框架',
+  description: 'a light weight for workflows management system',
 };
 
 export default function RootLayout({
@@ -31,10 +31,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <SidebarProvider>
             <AppSidebar />
-            <main className="pl-4">
-              <SidebarTrigger />
-              {children}
-            </main>
+            <main className="p-4">{children}</main>
           </SidebarProvider>
         </ThemeProvider>
       </body>
